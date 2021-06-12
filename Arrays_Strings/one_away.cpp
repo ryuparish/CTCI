@@ -9,12 +9,10 @@ int possible_single_edit(std::string word1, std::string word2, int& i){
         std::string temp_word1 = word1;
         temp_word1.insert(i, word2[i], 1);
         if(temp_word1.compare(word2) == 0){
-            std::cout << "Only one edit\n";
             return 0;
         }
         std::string temp_word2 = word2.erase(i, 1);
         if(temp_word2.compare(word1) == 0){
-            std::cout << "Only one edit\n";
             return 0;
         }
     }
@@ -24,12 +22,10 @@ int possible_single_edit(std::string word1, std::string word2, int& i){
         std::string temp_word2 = word2;
         temp_word2.insert(i, word1[i], 1);
         if(temp_word2.compare(word1) == 0){
-            std::cout << "Only one edit\n";
             return 0;
         }
         std::string temp_word1 = word1.erase(i, 1);
         if(temp_word1.compare(word2) == 0){
-            std::cout << "Only one edit\n";
             return 0;
         }
     }
@@ -38,13 +34,11 @@ int possible_single_edit(std::string word1, std::string word2, int& i){
     std::string temp_word1 = word1;
     temp_word1[i] = word2[i];
     if(temp_word1.compare(word2) == 0){
-        std::cout << "Only one edit\n";
         return 0;
     }
     std::string temp_word2 = word2;
     temp_word2[i] = word1[i];
     if(temp_word2.compare(word1) == 0){
-        std::cout << "Only one edit\n";
         return 0;
     }
     // None of the three edits worked, fail
@@ -55,6 +49,11 @@ int main(){
     std::string word1, word2, shortest_word;
     std::cin >> word1 >> word2;
 
+    // Edge case of the same words
+    if(word1.compare(word2) == 0){
+        std::cout << "No edits\n";
+        return 0;
+    }
     // Dealing with the last letter appendage edge case:
     // We want to check if all the letters up until the end of the shortest
     // word, then possibly appending just one letter if the rest match.
@@ -71,6 +70,7 @@ int main(){
         if(word1[i] != word2[i]){
             int success = possible_single_edit(word1, word2, i);
             if(!success){
+                std::cout << "Only one edit\n";
                 return 0;
             }
             std::cout << "Takes more than one edit\n";
