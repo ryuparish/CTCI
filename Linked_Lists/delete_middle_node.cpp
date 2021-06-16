@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include <stdlib.h>
 
 // Implementing a queue using only a linked list
@@ -71,23 +72,58 @@ struct linkedList{
     }
 
 };
+
+// Delete the middle node with only access to the middle node
+void deleteMiddleNode(link*& middleNode){
+    link* walker = middleNode;
+    link* next_copy = middleNode;
+    walker = walker->next;
+    // Walker is guaranteed to not be NULL because we start in the middle
+    next_copy->value = walker->value;
+    next_copy->next = walker->next;
+    free(walker);
+}
+
+link* getMiddleNode(link*& start){
+    int counter = 0;
+    link* walker = start->next;
+    while(walker != NULL){
+        counter++;
+        walker = walker->next;
+    }
+    walker = start->next;
+    for(int i = 0; i < counter/2; ++i){
+        walker = walker->next;
+    }
+    link* middleNode = walker;
+    return middleNode;
+}
             
 // Non circular for the ease in the union program
 void print_list(link*& start){
     link* walker = NULL;
     walker = start->next;
     while(walker != NULL){
-        std::cout << walker->value  << "\n";
+        std::cout << walker->value  << " ";
         walker = walker->next;
     }
+    std::cout << "\n";
 }
-    
+
 int main() {
-    int linkValues[5] = {1, 2, 3, 4, 5};
+    int linkValues[] = {1, 2, 3, 4, 5};
     linkedList* myList = new linkedList;
     for(int i = 0; i < sizeof(linkValues)/sizeof(linkValues[0]); ++i){
         myList->addNode(linkValues[i]);
     }
+    print_list(myList->headNode);
+    link* middleNode = getMiddleNode(myList->headNode);
+    deleteMiddleNode(middleNode);
+    std::cout << "\n";
+    print_list(myList->headNode);
+    link* middleNode2 = getMiddleNode(myList->headNode);
+    deleteMiddleNode(middleNode2);
+    std::cout << "\n";
     print_list(myList->headNode);
     delete(myList);
     return 0;
