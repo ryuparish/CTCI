@@ -2,8 +2,7 @@
 #include <stdlib.h>
 
 // NO HEAP LEAKAGE IN THIS IMPLEMENTATION!!!! YAYAYAYAYAYAY
-
-// Pointers are like little wizards that use their wand to manipulate objects
+// Raw Pointers are like little wizards that use their wand to manipulate objects
 
 struct link{
     int value = 0;
@@ -21,26 +20,34 @@ struct linkedList{
         travelerNode = headNode;
     }
 
-    void addNode(link* node){
+    // Adding and removing of nodes is based on values because it would be weird to have access to the node itself
+    // only to pass it to a method to change it's validity
+
+    void addNode(int nodeValue){
+        link* newNode = new link;
+        newNode->value = nodeValue;
         while(travelerNode->next != NULL){
             travelerNode = travelerNode->next;
         }
-        travelerNode->next = node;
+        travelerNode->next = newNode;
         travelerNode = headNode;
     }
     
-    void deleteNode(link*& node){
-        while(travelerNode->next != node && travelerNode->next != NULL){
+    void deleteNode(int nodeValue){
+        while(travelerNode->next != NULL && travelerNode->next->value != nodeValue){
             travelerNode = travelerNode->next;
         }
-        if(travelerNode->next = node){
+        // Reached end of list without finding the target node value
+        if(travelerNode->next == NULL){
+            return;
+        }
+        // Found the node with the target value
+        else{
+            link* purger = travelerNode->next;
             travelerNode->next = travelerNode->next->next;
-            travelerNode = travelerNode->next;
-            free(travelerNode);
+            free(purger);
             travelerNode = headNode;
         }
-        // If not found, just return the traveler back to it's place
-        travelerNode = headNode;
     }
 
     ~linkedList(){
@@ -58,25 +65,51 @@ struct linkedList{
 };
 
             
-// Non circular for the ease in the union program
+// Non circular for the ease in the union program void print_list(link*& start){ // You do not need to allocate a link object for the walker. That will only lead to lost data.
 void print_list(link*& start){
     link* walker = NULL;
     walker = start->next;
     while(walker != NULL){
-        std::cout << walker->value  << "\n";
+        std::cout << walker->value  << " ";
+        walker = walker->next;
+    }
+    std::cout << "\n";
+}
+
+// Remove duplicates by using no extra data structures
+// O(n^2) runtime
+void removeDupes(link*& start){
+    link* walker = start->next;
+    link* brother_walker = NULL;
+    while(walker != NULL){
+        brother_walker = walker;
+        while(brother_walker != NULL){
+            if(brother_walker->next != NULL && brother_walker->next->value == walker->value){
+                link* purger = brother_walker->next;
+                brother_walker->next = brother_walker->next->next;
+                free(purger);
+            }
+            else{
+                brother_walker = brother_walker->next;
+            }
+        }
         walker = walker->next;
     }
 }
+
+
+                
     
 int main() {
-    int linkValues[5] = {1, 2, 3, 4, 5};
+    int linkValues[] = {1, 2, 3, 3, 3, 4, 2, 2, 1, 5, 4, 5, 4, 5, 3, 1, 3, 4, 5};
     linkedList* myList = new linkedList;
     // Adding all the links to the linked list 
     for(int i = 0; i < sizeof(linkValues)/sizeof(linkValues[0]); ++i){
-        link* newNode = new link;
-        newNode->value = linkValues[i];
-        myList->addNode(newNode);
+        myList->addNode(linkValues[i]);
     }
+    print_list(myList->headNode);
+    removeDupes(myList->headNode);
+    std::cout << "\n";
     print_list(myList->headNode);
     delete(myList);
     return 0;
