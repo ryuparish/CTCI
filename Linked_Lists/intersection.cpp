@@ -1,8 +1,9 @@
 #include <iostream>
 #include <stdlib.h>
+#include <vector>
+#include <map>
 
 // Implementing a queue using only a linked list
-// NO MEMORY LEAKAGE WOO HOO!
 // Memory Management rules:
 //  1. Remember to create destructor that uses two pointers.
 //  2. Pointers do not always need to be allocated (new), especially if they are walkers.
@@ -31,9 +32,7 @@ struct linkedList{
     }
 
     // Adding a node with a value instead of passing a node because it would be more convenient
-    void addNode(int new_value){
-        link* newNode = new link;
-        newNode->value = new_value;
+    void addNode(link*& newNode){
         while(travelerNode->next != NULL){
             travelerNode = travelerNode->next;
         }
@@ -69,7 +68,6 @@ struct linkedList{
             free(purger);
         }
     }
-
 };
             
 // Non circular for the ease in the union program
@@ -77,18 +75,62 @@ void print_list(link*& start){
     link* walker = NULL;
     walker = start->next;
     while(walker != NULL){
-        std::cout << walker->value  << "\n";
+        std::cout << walker->value  << " ";
         walker = walker->next;
     }
+    std::cout << "\n";
 }
     
-int main() {
-    int linkValues[5] = {1, 2, 3, 4, 5};
-    linkedList* myList = new linkedList;
-    for(int i = 0; i < sizeof(linkValues)/sizeof(linkValues[0]); ++i){
-        myList->addNode(linkValues[i]);
+void intersect_checker(link*& start1, link*& start2){
+    std::map<link*, int> link_table;
+    link* traveler1 = start1->next;
+    link* traveler2 = start2->next;
+    while(traveler1 != NULL){
+        link_table[traveler1] = 1;
+        traveler1 = traveler1->next;
     }
-    print_list(myList->headNode);
-    delete(myList);
+    while(traveler2 != NULL){
+        if(link_table[traveler2]){
+            std::cout << "Intersection detected\n";
+            break;
+        }
+        traveler2 = traveler2->next;
+    }
+}
+
+int main() {
+    std::vector<int> linkValues1 = {1, 2, 3, 4, 5, 6, 7, 8};
+    std::vector<int> linkValues2 = {9, 10, 11, 12, 13, 14, 15, 16};
+    linkedList* List1 = new linkedList;
+    linkedList* List2 = new linkedList;
+    // Intersection link
+    link* intersect_link = new link;
+    intersect_link->value = 600;
+    for(int i = 0; i < linkValues1.size(); ++i){
+        if(i == 4){
+            List1->addNode(intersect_link);
+            ++i;
+            continue;
+        }
+        link* newNode = new link;
+        newNode->value = linkValues1[i];
+        List1->addNode(newNode);
+    }
+    for(int i = 0; i < linkValues2.size(); ++i){
+        if(i == 4){
+            List2->addNode(intersect_link);
+            ++i;
+            continue;
+        }
+        link* newNode = new link;
+        newNode->value = linkValues2[i];
+        List2->addNode(newNode);
+    }
+    print_list(List1->headNode);
+    print_list(List2->headNode);
+    intersect_checker(List1->headNode, List2->headNode);
+    // Leaving these to be commented out for now because there will be a double free error
+    //delete(List1);
+    //delete(List2);
     return 0;
 }
