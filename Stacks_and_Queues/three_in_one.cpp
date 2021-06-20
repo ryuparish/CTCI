@@ -3,7 +3,9 @@
 struct Stack{
     std::vector<int> stack;
     int head_1, head_2, head_3, last_index;
+    int* curr_head = NULL;
     Stack(){
+
         stack.push_back(0);
         stack.push_back(0);
         stack.push_back(0);
@@ -15,50 +17,27 @@ struct Stack{
     // Head 3 will be the furthest in front and adding 1 to it's value will
     // represent the total size of the vector.
     void add(int stack_num, int value){
-        if(stack_num == 1){
-            if(last_index < (head_1 + 3)){
-                // Making space for all the stacks
-                for(int i = 0; i < 3; ++i){
-                    stack.push_back(0);
-                }
-                stack[head_1] = value;
-                head_1 += 3;
+        // If we had more stacks, we could use a hash table
+        if(stack_num == 1){curr_head = &head_1;}
+        if(stack_num == 2){curr_head = &head_2;}
+        if(stack_num == 3){curr_head = &head_3;}
+
+        if(last_index < (*curr_head + 3)){
+            // Making space for all the stacks
+            for(int i = 0; i < 3; ++i){
+                stack.push_back(0);
             }
-            else{
-                stack[head_1] = value;
-                head_1 += 3;
-            }
-        }
-        else if (stack_num == 2){
-            if(last_index < (head_2 + 3)){
-                // Making space for all the stacks
-                for(int i = 0; i < 3; ++i){
-                    stack.push_back(0);
-                }
-                stack[head_2] = value;
-                head_2 += 3;
-            }
-            else{
-                stack[head_2] = value;
-                head_2 += 3;
-            }
+            stack[*curr_head] = value;
+            *curr_head += 3;
         }
         else{
-            if(last_index < (head_3 + 3)){
-                // Making space for all the stacks
-                for(int i = 0; i < 3; ++i){
-                    stack.push_back(0);
-                }
-                stack[head_3] = value;
-                head_3 += 3;
-            }
-            else{
-                stack[head_3] = value;
-                head_3 += 3;
-            }
+            stack[*curr_head] = value;
+            *curr_head += 3;
         }
     }
+    
     void delete_value(int stack_num){
+        // We could possibly use a for loop and set a variable to true or false and use that variable in a single conditional statement instead of doing this
         if(stack_num == 1){
             if(head_2 < head_1 && head_3 < head_1){
                 // Destroyting space for all the stacks
@@ -102,18 +81,8 @@ struct Stack{
     }
 };
 
-int main(){
-    Stack myStack;
-    myStack.add(1,1);
-    myStack.add(1,2);
-    myStack.add(1,3);
-    myStack.add(2,4);
-    myStack.add(2,5);
-    myStack.add(2,6);
-    myStack.add(3,7);
-    myStack.add(3,8);
-    myStack.add(3,9);
-    std::cout << "Stack 1: ";
+void print_stack(Stack& myStack){
+    std::cout << "\nStack 1: ";
     for(int i = 0; i < myStack.head_1; i += 3){
         std::cout << myStack.stack[i] << " ";
     }
@@ -125,6 +94,26 @@ int main(){
     for(int i = 2; i < myStack.head_3; i += 3){
         std::cout << myStack.stack[i] << " ";
     }
+}
+
+int main(){
+    Stack myStack;
+    myStack.add(1,1);
+    myStack.add(1,2);
+    myStack.add(1,3);
+    myStack.add(2,4);
+    myStack.add(2,5);
+    myStack.add(2,6);
+    myStack.add(3,7);
+    myStack.add(3,8);
+    myStack.add(3,9);
+    print_stack(myStack);
+    std::cout << "\nRemoving one from the second stack";
+    myStack.delete_value(2);
+    print_stack(myStack);
+    std::cout << "\nAdding the number 11 to the first stack";
+    myStack.add(1, 11);
+    print_stack(myStack);
     std::cout << "\n";
     return 0;
 }
