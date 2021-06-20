@@ -44,6 +44,19 @@ struct Stack{
         return top->min_value;
     }
 
+    ~Stack(){
+        stackNode* purger;
+        stackNode* walker = top->next;
+        free(top);
+        while(walker != NULL){
+            purger = walker;
+            walker = walker->next;
+            free(purger);
+        }
+    }
+
+        
+
 };
 
 void print_stack(Stack*& myStack){
@@ -87,6 +100,7 @@ int main(){
         }
         flip = !flip;
     }
+    delete(myStack);
     return 0;
 }
 
