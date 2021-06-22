@@ -141,6 +141,7 @@ int main(){
                 std::cout << "What value would you like to add? ";
                 std::cin >> value_cell;
 
+                // Set pointers equal to NULL after freeeing them then dereference them if you want the value they are pointing at (I think it would be NULL? Unless the pointer itself is NULL)
                 // Checking if the set of stacks is empty and adding one in the case that it is 
                 if(stackSet->stacks.size() == 0){
                     Stack* newStack = new Stack;
