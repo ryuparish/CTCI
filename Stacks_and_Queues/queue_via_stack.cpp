@@ -13,6 +13,7 @@ struct stackNode{
 };
 
 struct Stack{
+    // In a stack the top node is always the newest node or null
     stackNode* top = new stackNode;
 
     void push(int nodeValue){
@@ -34,6 +35,7 @@ struct Stack{
         return NULL;
     }
 
+    // Just gets the value of the top node
     stackNode* peek(){
         return top;
     }
@@ -42,6 +44,7 @@ struct Stack{
         return top->next == NULL;
     }
     
+    // Destructor
     ~Stack(){
         stackNode* purger = NULL;
         stackNode* walker = NULL;
@@ -61,11 +64,13 @@ struct myQueue{
     Stack* stack1 = NULL;
     Stack* stack1_reverse = NULL;
 
+    // Constructor
     myQueue(Stack*& orderedStack, Stack*& reversedStack){
         stack1 = orderedStack;
         stack1_reverse = reversedStack;
     }
 
+    // Unloads the stack when the reverse stack is empty
     void unloadStack1(){
         stackNode* nodeHolder;
         int intHolder;
@@ -116,7 +121,27 @@ int main(){
     // loading onto stack1_reverse
     theQueue->unloadStack1();
     print_stack(theQueue->stack1_reverse);
+    print_stack(theQueue->stack1);
+    
+    // Now popping from the oldest value
+    stackNode* popped_node = theQueue->pop();
+    std::cout << "Here is the oldest value: " << popped_node->value << "\n";
+    print_stack(theQueue->stack1_reverse);
+    print_stack(theQueue->stack1);
+    std::cout << "Adding 6 to the queue\n";
+    theQueue->push(6);
+    print_stack(theQueue->stack1_reverse);
+    print_stack(theQueue->stack1);
+
+    // Now popping all from the reverse queue and checking the values of both the stacks
+    std::cout << "Popping everything from the reverse stack\n";
+    stackNode* walker = theQueue->pop();
+    while(walker != NULL){
+        std::cout << "Popped: " << walker->value << "\n";
+        walker = theQueue->pop();
+    }
+    print_stack(theQueue->stack1_reverse);
+    print_stack(theQueue->stack1);
+
     return 0;
 }
-
-
