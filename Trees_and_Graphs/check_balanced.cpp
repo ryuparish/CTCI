@@ -44,6 +44,7 @@ int check_balanced(treeNode*& root, int counter){
     if(abs(left_count - right_count) > 1){
         std::cout << "Unbalanced trees with root: " << root->value << "\n";
     }
+    std::cout << "root->value: " << root->value << " left_count: " << left_count << " right_count: " << right_count << "\n";
     
     // The height of the current node is the tallest possible height (child1's height, child2's height, or the root nodes original height is the heighest(true) height)
     int highest_child_height = (left_count > right_count) ? left_count : right_count;
@@ -63,13 +64,21 @@ void inOrderSearch(treeNode*& root){
 }
 
 int main(){
-    std::vector<int> myList = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    treeNode* myRoot = createTree(myList.front()-1, myList.size());
-    // Purposefully making an extra long branch in the tree
-    treeNode* walker = myRoot;
-    for(int i = 0; i < 2; ++i){
-        walker = walker->left_child;
-    }
+    std::vector<int> mylist = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    treenode* myroot = createtree(mylist.front()-1, mylist.size());
+    // purposefully making an extra long branch in the tree
+    treenode* walker = myroot;
+
+    // Test with adding two extra to node 9
+    //for(int i = 0; i < 3; ++i){
+    //    walker = walker->right_child;
+    //}
+
+    // Test with adding two extra to node 0
+    //for(int i = 0; i < 3; ++i){
+    //    walker = walker->right_child;
+    //}
+    
     // Adding two extra nodes on the 0 node of the tree
     treeNode* extra1 = new treeNode;
     treeNode* extra2 = new treeNode;
@@ -78,8 +87,14 @@ int main(){
     walker->left_child = extra1;
     walker = walker->left_child;
     walker->left_child = extra2;
-    
-    
+
+    // Adding two extra nodes on the 9 node of the tree
+    //extra1->value = 10;             
+    //extra2->value = 11;             
+    //walker->right_child = extra1;   
+    //walker = walker->right_child;   
+    //walker->right_child = extra2;   
     check_balanced(myRoot, 0);
     return 0;
+
 }
