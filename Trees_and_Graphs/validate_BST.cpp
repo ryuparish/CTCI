@@ -28,38 +28,47 @@ treeNode* createTree(int start, int end){
 }
 
 // We can send a threshold along while searching the left and right side of the tree's children
-void inOrderValidate(treeNode*& root){
+// In order to see if there is an invalid node, we need to pass down a minimum and a maximum. Reset the minimum when you move left and reset the maximum when you move right.
+// The condition in which the node must be greater than the current max or less than the current max, etc, changes depending on which initial branch you are going down (left or right)
+void inOrderValidate(treeNode*& root, int min, int max){
     if(root != NULL){
 
         // DEBUG
-//        std::cout << "Current node: " << root->value << " left: ";
-//        if(root->left_child != NULL){
-//            std::cout << root->left_child->value << " ";
-//        }
-//        else{
-//            std::cout << 0 << " ";
-//        }
-//        // Now for checking the right child
-//        std::cout << "right: ";
-//        if(root->right_child != NULL){
-//            std::cout << root->right_child->value << " ";
-//        }
-//        else{
-//            std::cout << 0 << " ";
-//        }
-//        std::cout << "\n";
-//
-        // Checking the left value (if larger)
-        if(root->left_child != NULL && root->left_child->value > root->value){
-            std::cout << "Invalid node at root: " << root->value << "\n";
+        std::cout << "Current node: " << root->value << " left: ";
+        if(root->left_child != NULL){
+            std::cout << root->left_child->value << " ";
         }
-        inOrderValidate(root->left_child);
+        else{
+            std::cout << 0 << " ";
+        }
+        // Now for checking the right child
+        std::cout << "right: ";
+        if(root->right_child != NULL){
+            std::cout << root->right_child->value << " ";
+        }
+        else{
+            std::cout << 0 << " ";
+        }
+        std::cout << "min: " << min << " max: " << max << "\n";
+
+
+        // Checking if current value is valid
+        if(root->value > max || root->value < min){
+            std::cout << "Invalid node: " << root->value << "\n";
+        }
+
+        // Setting the new left and right values (they will not be evaluated if they are null)
+        int new_min = 0, new_max = 0;
+        if(root->left_child != NULL){
+            new_min = root->left_child->value;
+        }
+        if(root->right_child != NULL){
+            new_max = root->right_child->value;
+        }
+
+        inOrderValidate(root->left_child, new_min, max);
         std::cout << root->value << "\n";
-        inOrderValidate(root->right_child);
-        // Checking the right value (if smaller)
-        if(root->right_child != NULL && root->right_child->value < root->value){
-            std::cout << "Invalid node at root: " << root->value << "\n";
-        }
+        inOrderValidate(root->right_child, min, new_max);
     }
 }
 
@@ -72,9 +81,9 @@ int main(){
     walker = walker->left_child;
     treeNode* errorNode = new treeNode;
     errorNode->value = 12;
-    walker->left_child = errorNode;
+    walker->right_child = errorNode;
     
-    inOrderValidate(myRoot);
+    inOrderValidate(myRoot, myRoot->value, myRoot->value);
     std::cout << "\n";
     return 0;
 }
