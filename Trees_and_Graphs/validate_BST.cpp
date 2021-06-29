@@ -28,63 +28,83 @@ treeNode* createTree(int start, int end){
 }
 
 // We can send a threshold along while searching the left and right side of the tree's children
-// In order to see if there is an invalid node, we need to pass down a minimum and a maximum. Reset the minimum when you move left and reset the maximum when you move right.
-// The condition in which the node must be greater than the current max or less than the current max, etc, changes depending on which initial branch you are going down (left or right)
+// In order to see if there is an invalid node, we need to pass down a minimum and a maximum. Reset the minimum when you move right and check that the next node you will travel to will not violate either the minimum or the maximum. Reset the maximum when you move left and check the next node you will travel to for any violations.
+// When traveling from the initial node however, you do not want to check for 
 void inOrderValidate(treeNode*& root, int min, int max){
     if(root != NULL){
 
         // DEBUG
-        std::cout << "Current node: " << root->value << " left: ";
-        if(root->left_child != NULL){
-            std::cout << root->left_child->value << " ";
-        }
-        else{
-            std::cout << 0 << " ";
-        }
-        // Now for checking the right child
-        std::cout << "right: ";
-        if(root->right_child != NULL){
-            std::cout << root->right_child->value << " ";
-        }
-        else{
-            std::cout << 0 << " ";
-        }
-        std::cout << "min: " << min << " max: " << max << "\n";
+//        std::cout << "Current node: " << root->value << " left: ";
+//        if(root->left_child != NULL){
+//            std::cout << root->left_child->value << " ";
+//        }
+//        else{
+//            std::cout << 0 << " ";
+//        }
+//        // Now for checking the right child
+//        std::cout << "right: ";
+//        if(root->right_child != NULL){
+//            std::cout << root->right_child->value << " ";
+//        }
+//        else{
+//            std::cout << 0 << " ";
+//        }
+//        std::cout << "min: " << min << " max: " << max << "\n";
 
+        int new_max, new_min;
 
-        // Checking if current value is valid
-        if(root->value > max || root->value < min){
-            std::cout << "Invalid node: " << root->value << "\n";
+        // Checking left side after root node
+        if(min != 0 && root->left_child != NULL){
+            if(root->left_child->value > root->value || root->left_child->value < min){
+                std::cout << "Invalid node: " << root->left_child->value << "\n";
+            }
         }
+
+        // Checking left side from the root node
+        else if(root->left_child != NULL){
+            if(root->value < root->left_child->value){
+                std::cout << "Invalid node: " << root->left_child->value << "\n";
+            }
+        }
+        new_max = root->value;
 
         // Setting the new left and right values (they will not be evaluated if they are null)
-        int new_min = 0, new_max = 0;
-        if(root->left_child != NULL){
-            new_min = root->left_child->value;
-        }
-        if(root->right_child != NULL){
-            new_max = root->right_child->value;
-        }
+        inOrderValidate(root->left_child, min, new_max);
 
-        inOrderValidate(root->left_child, new_min, max);
         std::cout << root->value << "\n";
-        inOrderValidate(root->right_child, min, new_max);
+
+        // Checking right side after root node
+        if(max != 0 && root->right_child != NULL){
+            if(root->right_child->value < root->value || root->right_child->value > max){
+                std::cout << "Invalid node: " << root->right_child->value << "\n";
+            }
+        }
+        // Checking left side from the root node
+        else if(root->right_child != NULL){
+            if(root->value > root->right_child->value){
+                std::cout << "Invalid node: " << root->right_child->value << "\n";
+            }
+        }
+        new_min = root->value;
+
+        inOrderValidate(root->right_child, new_min, max);
     }
 }
 
 int main(){
+
     std::vector<int> myList = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     treeNode* myRoot = createTree(myList.front()-1, myList.size());
+
     // Adding an erroneous node to the 5 node
     treeNode* walker = myRoot;
     walker = walker->right_child;
     walker = walker->left_child;
     treeNode* errorNode = new treeNode;
     errorNode->value = 12;
-    walker->right_child = errorNode;
+    walker->left_child = errorNode;
     
-    inOrderValidate(myRoot, myRoot->value, myRoot->value);
-    std::cout << "\n";
+    inOrderValidate(myRoot, 0, 0);
     return 0;
 }
     
