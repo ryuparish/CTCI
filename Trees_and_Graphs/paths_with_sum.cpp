@@ -4,6 +4,7 @@
 
 struct treeNode{
     int value;
+    bool visited = false;
     treeNode* left_child = NULL;
     treeNode* right_child = NULL;
 };
@@ -60,16 +61,19 @@ int pathsWithSum(int sum, int target, treeNode*& curr_node, treeNode*& root){
     // a path starting from the node
     if(curr_node->left_child != NULL){
         total_matches += pathsWithSum(sum, target, curr_node->left_child, root);
-        if(curr_node != root){
+        if(curr_node != root && curr_node->visited == false){
             total_matches += pathsWithSum(curr_node->value, target, curr_node->left_child, root);
         }
     }
     if(curr_node->right_child != NULL){
         total_matches += pathsWithSum(sum, target, curr_node->right_child, root);
-        if(curr_node != root){
+        if(curr_node != root && curr_node->visited == false){
             total_matches += pathsWithSum(curr_node->value, target, curr_node->right_child, root);
         }
     }
+
+    // Since both the current node has been used as a possible starting point and possibilities for this current node as a beginning has been explored
+    curr_node->visited = true;
 
     return total_matches;
 }
